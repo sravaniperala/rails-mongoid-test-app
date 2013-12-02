@@ -1,18 +1,26 @@
 require 'capistrano/ext/multistage'
-set :application, "fancy_shoes"
-set :repository,  "git@account.beanstalkapp.com:/repository.git"
+set :application, "mongoid-test-app"
+set :repository,  "git@github.com:sravaniperala/rails-mongoid-test-app.git"
 
-set :stages, ["staging", "production"]
+set :stages, ["staging"]
 set :default_stage, "staging"
 
 set :scm, :git # You can set :scm explicitly or Capistrano will make an intelligent guess based on known version control directory names
 # Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
-set :user, "server-user-name"
+set :deploy_via, :remote_cache
+set :user, "alekhya"
+set :use_sudo, false
 
-role :web, "your web-server here"                          # Your HTTP server, Apache/etc
-role :app, "your app-server here"                          # This may be the same as your `Web` server
-role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
-role :db,  "your slave db-server here"
+namespace :deploy do
+  task :restart, :roles => :web do
+    run "touch #{ current_path }/tmp/restart.txt"
+  end
+end
+
+# role :web, "your web-server here"                          # Your HTTP server, Apache/etc
+# role :app, "your app-server here"                          # This may be the same as your `Web` server
+# role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
+# role :db,  "your slave db-server here"
 
 # if you want to clean up old releases on each deploy uncomment this:
 # after "deploy:restart", "deploy:cleanup"
